@@ -1,8 +1,14 @@
 package controllers
 
+import play.api._
 import play.api.mvc._
+import play.api.cache.Cache
 import play.api.Play.current
+
 import play.api.db._
+
+import scala.collection.mutable.ArrayBuffer
+
 
 
 object Application extends Controller {
@@ -11,11 +17,12 @@ object Application extends Controller {
     Ok(views.html.hotel1(null))
   }
 
-  def hotelData = Action { request =>
+  def resData = Action { request =>
     val resRaw = request.body.asText.toString()
     val res = resRaw.replaceAll("Some", "")
     val resNoIzq = res.replace("(", "")
     val newRes = resNoIzq.replace(")", "")
+    println("Esto es: " + newRes)
     val arrayRes = newRes.split(",")
 
     var str = ""
@@ -23,7 +30,7 @@ object Application extends Controller {
     try {
       val stmt = conn.createStatement
 
-      str = "INSERT INTO reservation(name, email, phone, amountAdults, amountOthers, spa, gym, inDate, outDate, floor, fcfm, total) VALUES ('" + arrayRes(0) + "','"+arrayRes(1)+"','"+arrayRes(2)+"','"+arrayRes(3)+"','"+arrayRes(4)+"','"+arrayRes(5)+"','"+arrayRes(6)+"','"+arrayRes(7)+"','"+arrayRes(8)+"','"+arrayRes(9)+"','"+arrayRes(10)+"','"+arrayRes(11)+"','"+arrayRes(12)+"')"
+      str = "INSERT INTO reservation( adults, dayin, dayout, email, fcfm, floor, gym, monthin, monthout, name, other, phone, spa, total) VALUES ('"+ arrayRes(0) + "','"+arrayRes(1)+"','"+arrayRes(2)+"','"+arrayRes(3)+"','"+arrayRes(4)+"','"+arrayRes(5)+"','"+arrayRes(6)+"',''"+arrayRes(7)+"','"+arrayRes(8)+"','"+arrayRes(9)+"','"+arrayRes(10)+"','"+arrayRes(11)+"','"+arrayRes(12)+"','"+arrayRes(13)+"')"
       print("STR: " + str)
       stmt.executeUpdate(str)
 
